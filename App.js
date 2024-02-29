@@ -17,6 +17,11 @@ import { RestaurantScreen } from "./src/features/restaurants/screens/restaurnat.
 import { SafeArea } from "./src/components/safe-area.components";
 
 const Tab = createBottomTabNavigator();
+const TAB_ICON = {
+  Restaurants: "restaurant-outline",
+  Map: "map-outline",
+  Settings: "settings-outline",
+};
 
 const Settings = () => (
   <SafeArea>
@@ -28,7 +33,19 @@ const Map = () => (
     <Text>Map</Text>
   </SafeArea>
 );
+const tabBarIcon =
+  (iconName) =>
+  ({ size, color }) =>
+    <Ionicons name={iconName} size={size} color={color} />;
 
+const ScreenOption = ({ route }) => {
+  const iconName = TAB_ICON[route.name];
+  return {
+    tabBarIcon: tabBarIcon(iconName),
+    tabBarActiveTintColor: "orange",
+    tabBarInactiveTintColor: "gray",
+  };
+};
 export default function App() {
   const [oswaldLoaded] = useOswald({
     Oswald_400Regular,
@@ -46,28 +63,7 @@ export default function App() {
     <>
       <ThemeProvider theme={theme}>
         <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ color, size }) => {
-                let iconName;
-
-                if (route.name === "Restaurants") {
-                  iconName = "restaurant-outline";
-                } else if (route.name === "Settings") {
-                  iconName = "settings-outline";
-                } else if (route.name === "Map") {
-                  iconName = "map";
-                }
-
-                // You can return any component that you like here!
-                return <Ionicons name={iconName} size={size} color={color} />;
-              },
-            })}
-            tabBarOptions={{
-              activeTintColor: "tomato",
-              inactiveTintColor: "gray",
-            }}
-          >
+          <Tab.Navigator screenOptions={ScreenOption}>
             <Tab.Screen name="Restaurants" component={RestaurantScreen} />
             <Tab.Screen name="Map" component={Map} />
             <Tab.Screen name="Settings" component={Settings} />
